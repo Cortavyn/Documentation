@@ -1,0 +1,14 @@
+---
+title: Memory, skills, subagents, and MCP
+description: Extend a deep agent without coupling application infrastructure to the model loop.
+order: 4
+---
+
+# Extension points
+
+`DeepMemory` supplies persistent context; `DeepSkill` registers named instructions that the model loads only when relevant. `write_todos` helps the model expose a multi-step plan.
+
+Register `DeepSubagent` specialists for isolated tasks. Each specialist receives a fresh agent and can be constrained to delegated workspace paths. Configure durable `DeepTaskStore`, `DeepTodoStore`, and `DeepRunStore` implementations whenever work outlives the process.
+
+MCP applications supply tools and resource workspaces through `mcpSources(...)`; the agent can read resources with `read_mcp_resource`.
+

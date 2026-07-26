@@ -1,0 +1,14 @@
+---
+title: Durable runs
+description: Checkpoints, interrupts, streaming, and the boundaries that keep agent work recoverable.
+order: 2
+---
+
+# Durable runs
+
+Durability is explicit: a graph persists caller-owned state through a `CheckpointStore`, while an application selects durable stores for pending deep-agent runs, todos, and subagent tasks. In-memory stores are reference implementations for tests and examples.
+
+An `Interrupt` pauses a graph at a known point and returns a `ResumeToken`. Resume supplies a caller-owned `StateUpdate`, preserving the thread identity and checkpoint history. Streaming exposes state, updates, retries, checkpoints, interrupts, debug events, and custom node events through `Flow.Publisher`.
+
+Use durable storage in production whenever a run must survive process restarts or wait for a human decision.
+

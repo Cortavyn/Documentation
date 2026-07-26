@@ -1,0 +1,24 @@
+---
+title: Troubleshooting
+description: Common setup and runtime checks for Cortavyn applications.
+order: 3
+---
+
+# Troubleshooting
+
+## The Maven build fails before compilation
+
+Confirm Java 25 and Maven 3.9 or later. The build enforces JSpecify nullness contracts through NullAway, so missing explicit nullability or package marking is a build failure rather than a warning.
+
+## A provider example cannot authenticate
+
+Verify its documented environment variable is present in the process running Maven. Do not add credentials to source files. Some providers also accept an optional model environment variable.
+
+## A run cannot be resumed after restart
+
+Replace in-memory checkpoint, pending-run, task, todo, or workspace stores with durable implementations appropriate for the application.
+
+## An agent action is pending
+
+Inspect the returned pending run and supply an `ApprovalDecision` for each requested action before calling `resume`.
+

@@ -1,0 +1,27 @@
+---
+title: Chat quickstart
+description: Create a reusable agent with an explicit tool loop.
+order: 2
+---
+
+# Chat quickstart
+
+Create the model through an adapter, register application tools, then reuse the agent across conversations.
+
+```java
+var agent = ChatAgent.builder(model)
+        .tools(weatherTool)
+        .maxIterations(10)
+        .build();
+
+Conversation updated = agent.reply(
+        new Conversation("customer-42", List.of()),
+        ChatMessage.user("What is the weather in Berlin?"))
+    .toCompletableFuture()
+    .join();
+```
+
+`Conversation` is immutable. Every call returns a new instance containing assistant and tool-result messages.
+
+For tools, continue with [Typed and runtime-aware tools](/chat/tools). For graph-hosted conversations, see [Graph integration](/chat/graph-integration).
+

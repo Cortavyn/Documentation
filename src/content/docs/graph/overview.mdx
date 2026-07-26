@@ -1,0 +1,14 @@
+---
+title: Graph
+description: Stateful, durable orchestration for agent workflows.
+order: 1
+---
+
+# Graph
+
+`cortavyn-graph` is a provider-independent, LangGraph-inspired runtime. Define a state schema, add asynchronous nodes, connect `START` and `END`, then compile an immutable graph.
+
+Nodes return partial `StateUpdate` values. Channels decide whether each value is replaced, reduced, collected as a topic, or cleared after a superstep. The runtime schedules a superstep concurrently up to its configured limit and merges updates in stable node order.
+
+Continue with the [Graph quickstart](/graph/quickstart).
+

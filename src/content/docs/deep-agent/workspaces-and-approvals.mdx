@@ -1,0 +1,16 @@
+---
+title: Workspaces and approvals
+description: Control filesystem access and pause unsafe actions for a human decision.
+order: 3
+---
+
+# Workspaces and approvals
+
+The built-in tools expose `ls`, `read_file`, `write_file`, `edit_file`, `glob`, and `grep`. `write_file`, `edit_file`, `write_memory`, and an optional `execute` tool pause by default; resume with one `ApprovalDecision` for each pending action.
+
+`PermissionedWorkspace` applies first-match-wins read/write path rules. Use `FilesystemWorkspace` only with a deliberately selected root. `ProcessSandbox` is intended for explicit local development and is not an untrusted-code isolation boundary; production applications should provide an isolated `Sandbox` implementation.
+
+<Aside type="caution" title="Choose the storage boundary deliberately">
+The virtual workspace snapshot travels in `DeepPendingRun` only when it implements `CheckpointableWorkspace`. Use durable stores for paused runs and external work.
+</Aside>
+

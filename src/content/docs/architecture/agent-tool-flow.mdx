@@ -1,0 +1,27 @@
+---
+title: Agent and tool flow
+description: How ChatAgent owns the tool loop while applications retain execution control.
+order: 2
+---
+
+# Agent and tool flow
+
+```mermaid
+sequenceDiagram
+    participant App as Application
+    participant Agent as ChatAgent
+    participant Model as ChatModel
+    participant Tool as ChatTool
+    App->>Agent: reply(conversation, user message)
+    Agent->>Model: messages + tool definitions
+    Model-->>Agent: assistant message + tool calls
+    loop each tool round
+        Agent->>Tool: execute(call, ToolRuntime)
+        Tool-->>Agent: ToolExecutionResult
+        Agent->>Model: tool-result messages
+    end
+    Agent-->>App: updated Conversation
+```
+
+The application configures `ToolRuntime` once and owns its context, store, and progress writer. Providers only translate the portable model protocol; they never invoke application tools.
+

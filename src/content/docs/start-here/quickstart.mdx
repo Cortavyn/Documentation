@@ -1,0 +1,29 @@
+---
+title: Quickstart
+description: Build Cortavyn from source and run a provider example.
+order: 2
+---
+
+# Quickstart
+
+The current development version is `0.1.0-SNAPSHOT`.
+
+<Render file="requirements" />
+
+```shell
+git clone https://github.com/Cortavyn/Cortavyn.git
+cd Cortavyn
+mvn verify
+```
+
+Run an example with credentials supplied through its provider environment variable:
+
+```shell
+OPENAI_API_KEY=... mvn -pl :cortavyn-example-openai-chat -am package -Prun-example
+```
+
+<Aside type="tip" title="Keep providers at the edge">
+Application code should depend on Cortavyn's portable contracts. Add a provider adapter only where the application constructs its `ChatModel`.
+</Aside>
+
+Next: learn [model and tool concepts](/concepts/model-and-tools) or create a [Chat agent](/chat/quickstart).

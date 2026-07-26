@@ -1,0 +1,14 @@
+---
+title: Checkpoints, interrupts, and streaming
+description: Recover, inspect, and observe graph execution.
+order: 4
+---
+
+# Checkpoints, interrupts, and streaming
+
+The runtime saves a checkpoint after each superstep through its `CheckpointStore`. `InMemoryCheckpointStore` is suitable for tests; production stores receive an application-provided `StateCodec` rather than relying on implicit object serialization.
+
+Pause before or after nodes with `interruptBefore` and `interruptAfter`, or return an `Interrupt` from a node. The resulting `ResumeToken` restarts the same thread with a caller-supplied update. `fork(checkpointId)` creates a new run from history.
+
+`stream` publishes state, update, retry, checkpoint, interrupt, debug, and custom node events. `CompiledGraph.toMermaid()` exports the topology for documentation and review.
+

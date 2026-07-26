@@ -1,0 +1,20 @@
+---
+title: Typed and runtime-aware tools
+description: Define safe application tools with schemas, typed arguments, and run context.
+order: 3
+---
+
+# Typed and runtime-aware tools
+
+`ChatTool.typed` derives a provider JSON Schema from a Java record and converts a tool call back into that type. Nullable record components are optional in the generated schema.
+
+```java
+record WeatherArguments(String city) { }
+
+var weather = ChatTool.typed(WeatherArguments.class, arguments ->
+        CompletableFuture.completedFuture(
+                ToolExecutionResult.success(weatherFor(arguments.city()))));
+```
+
+Runtime-aware tools receive `ToolRuntime`: your application context, a `ToolStore`, and a `ToolProgressWriter`. Configure the runtime once when building the agent. Return failures as tool-result content so the model can recover or explain them.
+

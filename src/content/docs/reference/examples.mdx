@@ -1,0 +1,17 @@
+---
+title: Examples
+description: Run the repository's executable smoke-test applications.
+order: 2
+---
+
+# Examples
+
+Examples are compiled by the normal build and do not call a provider automatically. They are grouped by provider beneath `examples/` and cover Chat, Graph, Deep Agent, tools, structured output, and operations.
+
+```shell
+OPENAI_API_KEY=... mvn -pl :cortavyn-example-openai-graph -am package -Prun-example
+OPENAI_API_KEY=... mvn -pl :cortavyn-example-openai-deep-agent -am package -Prun-example
+```
+
+Set `-Dexample.prompt="Explain durable agents in one sentence."` to supply a custom prompt. Refer to each provider example's module for required environment variables and optional model selection.
+

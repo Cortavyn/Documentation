@@ -1,0 +1,24 @@
+---
+title: Providers
+description: Select a model adapter while keeping application logic portable.
+order: 1
+---
+
+# Providers
+
+Cortavyn keeps provider SDKs at the boundary. The `cortavyn-model-api` artifact holds portable contracts; each `cortavyn-provider-*` artifact maps those contracts to one provider.
+
+| Adapter family | Module |
+| --- | --- |
+| OpenAI | `cortavyn-provider-openai` |
+| Anthropic | `cortavyn-provider-anthropic` |
+| Gemini | `cortavyn-provider-gemini` |
+| Mistral | `cortavyn-provider-mistral` |
+| Ollama | `cortavyn-provider-ollama` |
+| OpenAI-compatible | `cortavyn-provider-openai-compatible` |
+| Cloudflare Workers AI | `cortavyn-provider-cloudflare` |
+
+Additional adapters cover Azure OpenAI, AWS Bedrock, Groq, DeepSeek, xAI, Moonshot, Qwen, vLLM, Vercel AI Gateway, and OpenRouter.
+
+Provider examples live in the [Cortavyn repository](https://github.com/Cortavyn/Cortavyn/tree/main/examples). Keep provider credentials in environment variables and never include them in source or documentation snippets.
+

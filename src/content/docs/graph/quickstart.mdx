@@ -1,0 +1,26 @@
+---
+title: Graph quickstart
+description: Define state, connect nodes, and invoke a compiled graph.
+order: 2
+---
+
+# Graph quickstart
+
+```java
+var schema = StateSchema.builder(GraphState.adapter())
+        .channel("answer", StateChannel.lastValue())
+        .build();
+
+var graph = new StateGraph<>(schema)
+        .addNode("answer", (state, runtime) ->
+                completedFuture(new StateUpdate(Map.of("answer", "done"))))
+        .addEdge(StateGraph.START, "answer")
+        .addEdge("answer", StateGraph.END)
+        .compile();
+
+RunResult<GraphState> result = graph.invoke("customer-42", GraphState.empty())
+        .toCompletableFuture().join();
+```
+
+Use stable thread IDs when a run must later be resumed or inspected.
+

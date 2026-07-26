@@ -4,8 +4,6 @@ description: Provider-neutral messages, models, tool definitions, and structured
 order: 1
 ---
 
-# Model and tools
-
 `cortavyn-model-api` defines portable messages, requests, responses, streaming events, tool calls, and structured output. Provider modules translate these contracts to each remote protocol; they never execute your tools.
 
 Use `ChatModel` for completions, `StreamingChatModel` when incremental events matter, and `StructuredChatModel` to request a Java record from a model. Tool definitions describe what a model may call, while application-owned executors perform the work.

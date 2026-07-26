@@ -4,8 +4,6 @@ description: Run a conversation inside an application-defined durable graph.
 order: 4
 ---
 
-# Graph integration
-
 `ChatAgentNode` bridges Chat into `cortavyn-graph`. The node creates a run-scoped `ChatSession` from `NodeRuntime`, making the graph run ID available when constructing `ToolRuntime`.
 
 Use `GraphToolProgressWriter` to emit tool progress as graph custom events. The graph remains independent from Chat: applications choose state channels, checkpoint storage, routing, and their own observability pipeline.

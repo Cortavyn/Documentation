@@ -4,8 +4,6 @@ description: Define state, connect nodes, and invoke a compiled graph.
 order: 2
 ---
 
-# Graph quickstart
-
 ```java
 var schema = StateSchema.builder(GraphState.adapter())
         .channel("answer", StateChannel.lastValue())

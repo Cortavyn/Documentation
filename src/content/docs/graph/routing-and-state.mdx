@@ -4,8 +4,6 @@ description: Channels, commands, conditional routes, and fan-out work.
 order: 3
 ---
 
-# State and routing
-
 `StateSchema` declares the complete state surface. `StateChannel` controls merge behavior per key: last value, reduction, topic collection, or clear-after-superstep.
 
 Use ordinary edges for fixed topology. A `Command` combines a state update with an explicit next route; conditional edges select a target from state; and `Send` dynamically fans out independent work. All static endpoints are validated during `compile()`; dynamic targets are validated at runtime.

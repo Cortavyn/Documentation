@@ -4,8 +4,6 @@ description: Provider-neutral conversations and model/tool loops.
 order: 1
 ---
 
-# Chat
-
 `cortavyn-chat` provides a reusable `ChatAgent` over a provider-neutral `ChatModel`. Each turn appends the user message, invokes the model, executes requested tools concurrently, appends tool results, and repeats until the assistant returns no tool calls.
 
 The agent owns the loop; provider adapters only map Cortavyn messages to provider protocols. This separation keeps tools, application context, and persistence under application control.

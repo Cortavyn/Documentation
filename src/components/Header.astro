@@ -30,6 +30,11 @@ const currentSlug = Astro.url.pathname.replace(/\/$/, "") || "/";
 const sections = await getSidebarSections(currentSlug, { collection });
 const showSections = sections.length >= 2;
 const capabilities = [
+  {
+    label: "Overview",
+    href: "/start-here/overview",
+    match: ["/start-here", "/concepts", "/architecture", "/providers", "/reference"],
+  },
   { label: "Chat", href: "/chat/overview", match: "/chat" },
   { label: "Graph", href: "/graph/overview", match: "/graph" },
   { label: "Deep Agent", href: "/deep-agent/overview", match: "/deep-agent" },
@@ -67,7 +72,8 @@ const capabilities = [
 
       <nav aria-label="Capabilities" class="hidden lg:flex items-center rounded-lg bg-muted p-1">
         {capabilities.map((capability) => {
-          const isActive = currentSlug === capability.match || currentSlug.startsWith(`${capability.match}/`);
+          const matches = Array.isArray(capability.match) ? capability.match : [capability.match];
+          const isActive = matches.some((m) => currentSlug === m || currentSlug.startsWith(`${m}/`));
           return (
             <a
               href={capability.href}

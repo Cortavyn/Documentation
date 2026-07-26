@@ -11,6 +11,30 @@ const nimbusConfig = defineNimbusConfig({
   locale: "en",
   github: "https://github.com/Cortavyn/Cortavyn",
   socialImageAlt: "Cortavyn documentation preview",
+  // Each top-level group below gets its own scoped sidebar instead of one
+  // long merged tree — cross-section nav comes from the header's capability
+  // tabs (see Header.astro). The non-capability folders (start-here,
+  // concepts, architecture, providers, reference) are nested under a single
+  // synthetic "Overview" group so they share one combined sidebar rather
+  // than each losing its home in the header nav.
+  sidebar: {
+    scope: "section",
+    items: [
+      {
+        label: "Overview",
+        items: [
+          { label: "Start Here", autogenerate: { directory: "start-here" } },
+          { label: "Concepts", autogenerate: { directory: "concepts" } },
+          { label: "Architecture", autogenerate: { directory: "architecture" } },
+          { label: "Providers", autogenerate: { directory: "providers" } },
+          { label: "Reference", autogenerate: { directory: "reference" } },
+        ],
+      },
+      { label: "Chat", autogenerate: { directory: "chat" } },
+      { label: "Graph", autogenerate: { directory: "graph" } },
+      { label: "Deep Agent", autogenerate: { directory: "deep-agent" } },
+    ],
+  },
 });
 
 export default defineConfig({

@@ -29,6 +29,11 @@ const { collection, showSidebar = true } = Astro.props;
 const currentSlug = Astro.url.pathname.replace(/\/$/, "") || "/";
 const sections = await getSidebarSections(currentSlug, { collection });
 const showSections = sections.length >= 2;
+const capabilities = [
+  { label: "Chat", href: "/chat/overview", match: "/chat" },
+  { label: "Graph", href: "/graph/overview", match: "/graph" },
+  { label: "Deep Agent", href: "/deep-agent/overview", match: "/deep-agent" },
+];
 ---
 
 <header class="sticky top-0 z-30 border-b border-border bg-card/80 backdrop-blur-lg">
@@ -59,6 +64,26 @@ const showSections = sections.length >= 2;
           {config.title}
         </span>
       </a>
+
+      <nav aria-label="Capabilities" class="hidden lg:flex items-center rounded-lg bg-muted p-1">
+        {capabilities.map((capability) => {
+          const isActive = currentSlug === capability.match || currentSlug.startsWith(`${capability.match}/`);
+          return (
+            <a
+              href={capability.href}
+              aria-current={isActive ? "page" : undefined}
+              class:list={[
+                "rounded-md px-3 py-1 text-xs font-semibold no-underline transition-colors",
+                isActive
+                  ? "bg-card text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground",
+              ]}
+            >
+              {capability.label}
+            </a>
+          );
+        })}
+      </nav>
 
       {showSections && (
         <nav aria-label="Sections" class="hidden md:flex items-center gap-1 ml-4 pl-4 border-l border-border h-6">

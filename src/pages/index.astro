@@ -8,12 +8,22 @@ import { config } from "virtual:nimbus/config";
   <div class="flex flex-col min-h-screen">
     <Header />
     <main class="flex-1 mx-auto max-w-4xl w-full px-6 py-24">
-      <h1
-        class="text-foreground leading-tight"
-        style="font-size: var(--nb-h1-size); font-weight: var(--nb-h1-weight); letter-spacing: var(--nb-h1-tracking);"
-      >
-        {config.title}
-      </h1>
+      <div class="flex items-center gap-4">
+        <img
+          src="/branding/cortavyn-icon.svg"
+          width="72"
+          height="40"
+          alt=""
+          aria-hidden="true"
+          class="h-10 w-[4.5rem]"
+        />
+        <h1
+          class="text-foreground leading-tight"
+          style="font-size: var(--nb-h1-size); font-weight: var(--nb-h1-weight); letter-spacing: var(--nb-h1-tracking);"
+        >
+          {config.title}
+        </h1>
+      </div>
       <p class="mt-2 text-[1.0625rem] text-muted-foreground leading-relaxed">
         Build durable, provider-neutral agent systems in Java.
       </p>

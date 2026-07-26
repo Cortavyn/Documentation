@@ -4,9 +4,7 @@ description: How ChatAgent owns the tool loop while applications retain executio
 order: 2
 ---
 
-# Agent and tool flow
-
-```mermaid
+<pre class="mermaid">{`
 sequenceDiagram
     participant App as Application
     participant Agent as ChatAgent
@@ -21,7 +19,7 @@ sequenceDiagram
         Agent->>Model: tool-result messages
     end
     Agent-->>App: updated Conversation
-```
+`}</pre>
 
 The application configures `ToolRuntime` once and owns its context, store, and progress writer. Providers only translate the portable model protocol; they never invoke application tools.
 

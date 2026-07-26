@@ -4,11 +4,9 @@ description: Dependency direction and runtime ownership across Cortavyn modules.
 order: 1
 ---
 
-# Architecture
-
 Cortavyn's module graph protects its portability: Graph, Chat, and provider modules depend only on the APIs they need; Deep Agent composes Graph and the model API; no core module depends on a provider SDK.
 
-```mermaid
+<pre class="mermaid">{`
 flowchart LR
   Core[cortavyn-core] --> Graph[cortavyn-graph]
   Model[cortavyn-model-api] --> Chat[cortavyn-chat]
@@ -17,7 +15,7 @@ flowchart LR
   Model --> Deep
   Chat --> Deep
   Model --> Providers[cortavyn-provider-*]
-```
+`}</pre>
 
 The versioned Structurizr C4 model lives in the [source repository](https://github.com/Cortavyn/Cortavyn/tree/main/architecture). The `cortavyn-architecture` module enforces dependency directions with ArchUnit.
 

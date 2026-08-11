@@ -1,3 +1,5 @@
+import mermaid from "mermaid";
+
 let diagrams: HTMLPreElement[] = [];
 const captured = new WeakSet<HTMLPreElement>();
 
@@ -169,17 +171,6 @@ function wrapDiagram(diagram: HTMLPreElement) {
 
 async function render() {
 	diagrams.forEach(captureDiagramSource);
-
-	let mermaid: typeof import("mermaid").default;
-	try {
-		// Dynamically import mermaid — the ~2.5 MB bundle is only fetched
-		// on the pages that actually contain diagrams.
-		({ default: mermaid } = await import("mermaid"));
-	} catch (e) {
-		diagrams.forEach(showRenderError);
-		console.error("Mermaid load failed:", e);
-		return;
-	}
 
 	const isLight =
 		document.documentElement.getAttribute("data-mode") !== "dark";

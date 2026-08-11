@@ -130,4 +130,28 @@ const capabilities = [
       <ThemeToggle />
     </div>
   </div>
+
+  <nav
+    aria-label="Capabilities"
+    class="lg:hidden flex items-center gap-1 overflow-x-auto border-t border-border px-3 py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+  >
+    {capabilities.map((capability) => {
+      const matches = Array.isArray(capability.match) ? capability.match : [capability.match];
+      const isActive = matches.some((m) => currentSlug === m || currentSlug.startsWith(`${m}/`));
+      return (
+        <a
+          href={capability.href}
+          aria-current={isActive ? "page" : undefined}
+          class:list={[
+            "shrink-0 rounded-md px-3 py-1.5 text-xs font-semibold no-underline transition-colors",
+            isActive
+              ? "bg-foreground text-background"
+              : "text-muted-foreground hover:bg-accent hover:text-foreground",
+          ]}
+        >
+          {capability.label}
+        </a>
+      );
+    })}
+  </nav>
 </header>

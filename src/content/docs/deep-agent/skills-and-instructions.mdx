@@ -1,0 +1,22 @@
+---
+title: Skills and repository instructions
+description: Give agents reusable task playbooks without loading every detail into every prompt.
+order: 6
+---
+
+A `DeepSkill` has a name, description, instructions, and optional resource files. At startup the agent sees only each skill's name and description. It loads the detailed instructions through the skill tool when relevant, which keeps static context focused.
+
+`discoverSkills(root)` adopts the Agent Skills layout. It scans for `SKILL.md` files two directories deep, expecting each at `<root>/<skill>/SKILL.md`, and includes the remaining files in that skill directory as relative resources. The Markdown file must begin with YAML frontmatter containing `name` and `description`.
+
+```md
+---
+name: release-check
+description: Prepare and verify a release candidate.
+---
+
+Run the verification suite before preparing the release notes.
+```
+
+The same discovery call recursively loads repository `AGENTS.md` files as agent instructions. Use those files for repository-wide and directory-specific operating rules; use skills for focused procedures the model should load only when needed.
+
+You may register skills directly with `skills(...)` when discovery from the filesystem is unsuitable. Since skill instructions can guide tool use, treat their source directory as trusted application configuration.

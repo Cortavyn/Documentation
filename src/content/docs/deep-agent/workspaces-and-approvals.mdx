@@ -1,14 +1,47 @@
 ---
 title: Workspaces and approvals
-description: Control filesystem access and pause unsafe actions for a human decision.
+description: Give each agent thread a safe file boundary and review changes before they run.
 order: 3
 ---
 
-The built-in tools expose `ls`, `read_file`, `write_file`, `edit_file`, `glob`, and `grep`. `write_file`, `edit_file`, `write_memory`, and an optional `execute` tool pause by default; resume with one `ApprovalDecision` for each pending action.
+The workspace is the agent's file boundary. The built-in tools expose `ls`, `read_file`, `write_file`, `edit_file`, `glob`, and `grep`, always using workspace-relative paths. If no workspace is configured, `DeepAgent` creates an isolated `InMemoryWorkspace` for each thread. A caller-supplied workspace is deliberately shared, so use one only when that sharing is intentional.
 
-`PermissionedWorkspace` applies first-match-wins read/write path rules. Use `FilesystemWorkspace` only with a deliberately selected root. `ProcessSandbox` is intended for explicit local development and is not an untrusted-code isolation boundary; production applications should provide an isolated `Sandbox` implementation.
+## Pick a workspace backend
+
+`InMemoryWorkspace` is the safe default for short-lived work and can travel with a pending run because it implements `CheckpointableWorkspace`. `FilesystemWorkspace` exposes a selected host directory and rejects paths that escape its root. `StoreWorkspace` adapts an application-owned `WorkspaceStore`, which is the usual choice for durable or remote file storage.
+
+```java
+var agent = DeepAgent.builder(model)
+        .workspace(new FilesystemWorkspace(projectRoot))
+        .build();
+```
+
+Use a narrowly chosen root, never a broad host directory. The agent's model input is not a permission boundary: it can ask to read any path available through the configured workspace.
+
+## Read bounded and rich files
+
+When the backend implements `DeepWorkspaceFiles`, `read_file` accepts an offset and line limit. This lets the agent inspect a large text file in windows instead of adding the entire file to the prompt. The `WorkspaceRead` result reports the offset, total line count, size, and whether more content remains.
+
+`FilesystemWorkspace` recognizes common image, audio, PDF, and presentation formats and returns them as portable `ChatContent` blocks. Text, JSON, XML, YAML, CSV, and common source formats are returned as line-numbered text. Provider support for a particular non-text content type still determines whether the configured model can consume it.
+
+## Review changes durably
+
+`write_file`, `edit_file`, `write_memory`, and an optional `execute` tool pause by default. A pending run contains its sensitive tool calls and conversation. Resume it with exactly one `ApprovalDecision` for each pending action, in the order shown by the interrupt. An approval decision can approve, reject, request a response, or edit tool arguments; edited arguments are validated against the tool schema before execution.
+
+Persist `DeepRunStore`, `DeepTodoStore`, and `DeepTaskStore` outside the process whenever approvals, plans, or delegated tasks must survive a restart. The workspace snapshot travels in `DeepPendingRun` only when it implements `CheckpointableWorkspace`.
+
+## Compose the right storage boundary
+
+`PermissionedWorkspace` applies first-match-wins read/write path rules. `StoreWorkspace` adapts an application-owned `WorkspaceStore`, including a remote store, while `PolicyWorkspace` invokes application policy before and after every workspace operation. `CompositeWorkspace` mounts multiple workspaces below explicit relative prefixes, choosing the longest matching prefix for each path.
+
+```java
+DeepWorkspace workspace = new CompositeWorkspace(List.of(
+        new WorkspaceMount("project", new FilesystemWorkspace(projectRoot)),
+        new WorkspaceMount("artifacts", new StoreWorkspace(artifactStore))));
+```
+
+Read [sandbox execution](/deep-agent/sandbox-execution) before enabling the `execute` tool.
 
 <Aside type="caution" title="Choose the storage boundary deliberately">
-The virtual workspace snapshot travels in `DeepPendingRun` only when it implements `CheckpointableWorkspace`. Use durable stores for paused runs and external work.
+Use durable stores for paused runs and external work. A shared configured workspace is intentionally shared; without one, the agent creates one in-memory workspace per thread.
 </Aside>
-

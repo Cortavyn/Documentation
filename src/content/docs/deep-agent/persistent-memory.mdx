@@ -1,0 +1,20 @@
+---
+title: Persistent memory
+description: Carry selected, namespace-scoped context across deep-agent runs.
+order: 5
+---
+
+`DeepMemory` loads a string into the initial system context and exposes memory tools to the agent. It is for durable facts, preferences, or compact working knowledge—not for complete transcripts or unrestricted file storage.
+
+```java
+var memory = new FileDeepMemory(memoryRoot);
+var agent = DeepAgent.builder(model)
+        .memory(memory, "customer-42")
+        .build();
+```
+
+The namespace separates independent memory scopes. `FileDeepMemory` stores each namespace in a local Markdown file and accepts only letters, numbers, dots, underscores, and hyphens in its name. Its writes are atomic, making it a practical option for a local deployment with a deliberately selected private directory.
+
+The agent receives loaded memory before the user request and may use `write_memory`, which is approval-protected by default. For shared, encrypted, audited, or multi-tenant deployments, implement `DeepMemory` against the application's own persistence and authorization layer.
+
+Keep memory concise. It consumes model context on every run; retain authoritative or large source material in a workspace, MCP resource, or application retrieval system instead.

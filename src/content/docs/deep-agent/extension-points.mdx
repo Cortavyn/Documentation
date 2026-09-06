@@ -1,14 +1,17 @@
 ---
-title: Memory, skills, subagents, and MCP
-description: Extend a deep agent without coupling application infrastructure to the model loop.
-order: 4
+title: Extensions overview
+description: Choose the right extension point for knowledge, delegation, integrations, and code execution.
+order: 10
 ---
 
-# Extension points
+Deep Agent keeps application infrastructure behind small, replaceable contracts. Choose one extension surface for each responsibility rather than making model prompts carry application secrets or runtime policy.
 
-`DeepMemory` supplies persistent context; `DeepSkill` registers named instructions that the model loads only when relevant. `write_todos` helps the model expose a multi-step plan.
+| Need | Start here |
+| --- | --- |
+| Long-lived agent facts and preferences | [Persistent memory](/deep-agent/persistent-memory) |
+| Reusable, on-demand task instructions | [Skills](/deep-agent/skills-and-instructions) |
+| Parallel or specialized delegated work | [Subagents and delegation](/deep-agent/subagents-and-delegation) |
+| Tools and read-only resources from external systems | [MCP and OAuth](/deep-agent/mcp-and-oauth) |
+| Deliberate JavaScript evaluation and narrow callable capabilities | [Interpreter tools](/deep-agent/interpreter-tools) |
 
-Register `DeepSubagent` specialists for isolated tasks. Each specialist receives a fresh agent and can be constrained to delegated workspace paths. Configure durable `DeepTaskStore`, `DeepTodoStore`, and `DeepRunStore` implementations whenever work outlives the process.
-
-MCP applications supply tools and resource workspaces through `mcpSources(...)`; the agent can read resources with `read_mcp_resource`.
-
+`DeepHarnessProfile` selects the built-ins suitable for a particular model or deployment: workspace, todos, skills, memory, sandbox, interpreter, subagents, and MCP resources. Application-supplied `ChatTool`s remain available regardless of the profile. Use `DeepHarnessProfile.defaults()` to enable every built-in, or construct a profile with only the capabilities your deployment supports.

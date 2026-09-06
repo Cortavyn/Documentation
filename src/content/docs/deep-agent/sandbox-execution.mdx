@@ -1,0 +1,34 @@
+---
+title: Sandbox execution
+description: Enable the execute tool only with an explicit, appropriate execution boundary.
+order: 4
+---
+
+The `execute` tool does not exist unless you configure a `Sandbox` on the builder. It is approval-protected by the default policy, alongside workspace writes and memory writes.
+
+```java
+var agent = DeepAgent.builder(model)
+        .workspace(new FilesystemWorkspace(workspaceRoot))
+        .sandbox(sandbox)
+        .build();
+```
+
+The sandbox is an application security decision. Cortavyn passes a command and a timeout to the configured backend; it cannot make an unsafe backend safe.
+
+## Local development: ProcessSandbox
+
+`ProcessSandbox` is useful for an explicit local-development workflow. It launches a host process, so it is not a boundary for untrusted code, untrusted prompts, or multi-tenant workloads. Restrict its use to environments where executing host commands is already acceptable.
+
+## Docker isolation: ContainerSandbox
+
+`ContainerSandbox` runs Docker with networking disabled, memory/CPU/PID limits, a read-only container filesystem, a no-exec temporary filesystem, and a scoped writable `/workspace` mount. `ContainerSandbox.Limits.defaults()` supplies conservative defaults; select the image, mount path, and limits deliberately for your workload.
+
+It implements `SandboxFiles`, so the agent integration can transfer files to and from the mounted workspace. Docker and the selected image remain operational dependencies of the application.
+
+## Remote isolation: RemoteSandbox
+
+`RemoteSandbox` calls the Cortavyn sandbox HTTP protocol for commands and safe relative file transfer. Provide an `HttpClient`, endpoint, sandbox ID, and a token supplier. The remote service owns actual isolation, scheduling, audit retention, and credential validation; Cortavyn only provides the adapter.
+
+<Aside type="caution" title="Treat output as untrusted">
+Command output returns to the model as tool output. Apply application-level limits and review policies appropriate to the data and commands your sandbox can access.
+</Aside>

@@ -1,0 +1,28 @@
+---
+title: MCP and OAuth
+description: Attach Model Context Protocol tools and resources with application-owned transports and credentials.
+order: 9
+---
+
+MCP sources let a deep agent call external tools and read externally managed resources without coupling the harness to a particular server or credential store. Pass one or more `McpToolSource` instances through `mcpSources(...)`.
+
+`McpClient.connect(name, transport)` is the built-in client adapter. It initializes the MCP session, discovers tools and resources, turns tools into `ChatTool`s, and exposes resources through `read_mcp_resource` when the MCP-resources harness capability is enabled.
+
+```java
+var client = McpClient.connect("knowledge", transport)
+        .toCompletableFuture().join();
+try (client) {
+    var agent = DeepAgent.builder(model).mcpSources(client).build();
+    // invoke or stream the agent
+}
+```
+
+Use `StdioMcpTransport` for a locally managed MCP process and `HttpMcpTransport` for an HTTP MCP session. The application owns process lifecycle, endpoint trust, reconnect policy, and access-token handling. Close `McpClient` when its transport is no longer needed.
+
+## OAuth token lifecycle
+
+`McpOAuth` supports client credentials, authorization-code exchange with PKCE, and refresh. Build an authorization URL with `authorizationUri(...)`; exchange the callback code with `exchangeAuthorizationCode(...)`. For service-to-service use, `clientCredentials(...)` obtains a token directly.
+
+`bearerSupplier(client, configuration, tokenStore, key)` is the usual bridge to an HTTP transport: it loads a cached token, refreshes it when necessary, otherwise acquires client credentials, and persists the result through `McpOAuthTokenStore`.
+
+Use a durable, protected token store in production. Never place client secrets, access tokens, or refresh tokens in agent prompts, skill files, or workspace content.

@@ -1,12 +1,13 @@
 ---
 title: Deep Agent
-description: A durable, tool-using agent harness with isolated workspaces and planning.
+description: A durable, tool-using agent harness with workspaces, planning, and controlled execution.
 order: 1
 ---
 
-`cortavyn-deep` composes Graph, Chat, and the model API into a portable deep-agent harness. It provides a thread-isolated virtual workspace, task planning, todos, persistent memory, skills, subagents, optional MCP sources, and approval-aware writes.
+`cortavyn-deep` composes Graph, Chat, and the model API into a portable deep-agent harness. It provides a thread-isolated virtual workspace, task planning, todos, persistent memory, discovered skills, static and dynamic subagents, MCP tools and resources, interpreter tools, and approval-aware writes.
 
-`invoke` and `resume` run through an internal `StateGraph`. A pending approval is therefore a durable graph interrupt rather than an in-process callback.
+`invoke` and `resume` run through an internal `StateGraph`. A pending approval is therefore a durable graph interrupt rather than an in-process callback. `stream(DeepRequest)` and `resumeStream(...)` publish typed progress events, including model text deltas when the model supports streaming.
+
+The harness keeps large tool results outside the prompt, applies character- and token-aware context limits, and retries a context-window overflow with a compacted conversation. Static system, memory, and skill context carries provider-specific cache markers by default; disable that behavior with `PromptCachePolicy.disabled()` when a provider or deployment requires it.
 
 Start with the [Deep Agent quickstart](/deep-agent/quickstart).
-

@@ -1,0 +1,32 @@
+---
+title: Interpreter tools
+description: Offer isolated JavaScript evaluation with an explicit allowlist of callable application capabilities.
+order: 11
+---
+
+`QuickJsInterpreter` enables the deep-agent `eval` tool. Interpreter sessions are scoped to an agent thread, so a program can retain state across evaluations for that thread without leaking it into another thread. Always close the agent or interpreter to release its runtime resources.
+
+```java
+try (var agent = DeepAgent.builder(model)
+        .interpreter(new QuickJsInterpreter())
+        .build()) {
+    // invoke or stream the agent
+}
+```
+
+Use `QuickJsInterpreterLimits` to select execution limits suitable for the deployment. JavaScript isolation does not grant access to arbitrary host capabilities by itself.
+
+## Explicit callable tools
+
+Pass `DeepInterpreterTool` implementations to expose narrow capabilities to JavaScript. Each tool receives JSON arguments and returns JSON text asynchronously. Inside a program it is available as `tools.<name>(arguments)`.
+
+```java
+DeepInterpreterTool lookup = new DeepInterpreterTool() {
+    public String name() { return "lookup"; }
+    public CompletionStage<String> call(String json) { return lookupJson(json); }
+};
+
+var interpreter = new QuickJsInterpreter(QuickJsInterpreterLimits.defaults(), List.of(lookup));
+```
+
+No application tool is exposed to interpreter programs unless you explicitly register it this way. Validate arguments in the tool implementation, apply the same authorization rules as for an HTTP endpoint, and return only data that may safely enter model context.

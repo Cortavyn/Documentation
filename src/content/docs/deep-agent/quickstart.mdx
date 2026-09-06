@@ -16,9 +16,12 @@ DeepRun run = agent.invoke("research-42", "Collect findings in notes/findings.tx
 
 The default in-memory workspace accepts safe relative paths only. Without a configured workspace, each thread receives an isolated in-memory workspace.
 
+Use `DeepRequest` when the input includes `ChatContent` beyond plain text. A `FilesystemWorkspace` can return image, audio, and document content through bounded `read_file` calls, so an agent can inspect supported workspace files without placing an entire large file in its prompt.
+
+For long-running or interactive work, subscribe to `stream(new DeepRequest(...))`. It emits `DeepEvent` values for tool requests and results, todo changes, context offloads, subagent lifecycle, approvals, terminal completion and failure. With a `StreamingChatModel`, it additionally emits `TextDelta` events as the assistant generates text.
+
 For an executable example without credentials, run:
 
 ```shell
 mvn -pl :cortavyn-example-deep -am package -Prun-example
 ```
-

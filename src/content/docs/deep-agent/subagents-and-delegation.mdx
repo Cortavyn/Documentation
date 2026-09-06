@@ -1,0 +1,33 @@
+---
+title: Subagents and delegation
+description: Delegate bounded work to specialists while retaining visibility and storage control.
+order: 7
+---
+
+Subagents give a deep agent a fresh context for a delegated task. Register a named `DeepSubagent` with a role-specific system prompt and any application tools it needs.
+
+```java
+var researcher = new DeepSubagent(
+        "researcher",
+        "Finds and summarizes evidence.",
+        "You are a careful research specialist.",
+        List.of(searchTool));
+
+var agent = DeepAgent.builder(model)
+        .subagents(researcher)
+        .build();
+```
+
+The parent exposes delegated work through the `task`, `start_task`, and `await_task` tools. `start_task` returns a task ID; `await_task` retrieves its report. The default `general-purpose` subagent is available unless disabled with `generalPurposeSubagent(false)`.
+
+## Limit specialist access
+
+A configured specialist starts with a new agent context. If the parent uses a configured workspace, pass `WorkspacePermission` values on the `DeepSubagent` to restrict that specialist to delegated paths. Give each specialist only the tools it needs and, when appropriate, a more restrictive approval policy.
+
+Task lifecycle state belongs in `DeepTaskStore`. Use a durable implementation whenever a task may outlive the process; pair it with durable run and todo stores if the parent can also pause for approval.
+
+## Define specialists dynamically
+
+The `define_specialist` tool can create a `DynamicSpecialist` during a run. Its name must use letters, digits, `_`, or `-`; it supplies a description and isolated system prompt. The resulting worker inherits the parent model, application tools, context policy, and approval policy.
+
+Subscribe to `childStreams()` before delegation when the UI or an observability pipeline needs per-child messages, tool calls, output, or nested child streams. The parent event stream remains the right place for high-level task start and completion events.

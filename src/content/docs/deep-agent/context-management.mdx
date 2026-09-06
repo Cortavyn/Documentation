@@ -1,0 +1,24 @@
+---
+title: Context management
+description: Keep long-running tool loops within model context limits while preserving the full work trail.
+order: 12
+---
+
+`ContextPolicy` controls how much work stays inline in a deep-agent conversation. Its defaults limit iterations, inline tool-result characters and estimated tokens, and retained history characters and estimated tokens.
+
+When a tool result exceeds either inline limit, the harness writes the complete result under `context/tool-results/` in the current workspace, returns a short preview to the model, and emits `ContextOffloaded`. The model can then use `read_file` to inspect the complete result only when it needs it.
+
+```java
+var policy = new ContextPolicy(
+        30, 16_000, 100_000,
+        4_000, 25_000,
+        128_000, 1_000);
+
+var agent = DeepAgent.builder(model).contextPolicy(policy).build();
+```
+
+Set `contextWindowTokens` when the deployment's actual context window is known. The effective history budget reserves room for a subsequent completion. Keep the configured workspace writable when offloading may occur.
+
+Before every model turn, the harness compacts history. If a provider nevertheless reports a context-window overflow, it asks the model for a conversation summary and retries the original turn once with that compacted context. Other provider errors are propagated normally.
+
+`PromptCachePolicy` is enabled by default and adds Cortavyn's cache marker to static system, memory, and skill context. Provider adapters decide whether and how to use that marker. Call `promptCachePolicy(PromptCachePolicy.disabled())` for a deployment where static-prompt caching is undesirable.
